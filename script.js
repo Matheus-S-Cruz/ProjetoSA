@@ -1,3 +1,13 @@
+let atividadesUsuario = {};
+
+let usuario = JSON.parse(localStorage.getItem("logado"));
+if (usuario) {
+    let atividades = JSON.parse(localStorage.getItem("atividadesUsuario"));
+    if (atividades) {
+        atividadesUsuario = atividades;
+    }
+}
+
 const campoLogin = document.getElementById("login")
 const campoSenha = document.getElementById("password")
 const campoNovoLogin = document.getElementById("novoLogin")
@@ -44,63 +54,61 @@ function login(){
 }   
 }
 
-
-let listaMateria = [];
-let listaAtividade = [];
-
-function ver() {
-    console.log(listaMateria);
-    console.log(listaAtividade);
-}
-
-function adc(){
-    let materia = document.getElementById("materia").value;
-    let atividade = document.getElementById("atividade").value;
-    var materiaMaiusc = materia.toUpperCase();
-    var atividadeMaiusc = atividade.toUpperCase();
-    if(listaMateria.includes(materiaMaiusc) == true){
-        Swal.fire({
-            icon: 'error',
-            title: 'Erro',
-            text: 'A pessoa '+materia+' não foi encontrada na lista!'
-          })
-    }else{
-    listaMateria.push(materiaMaiusc);
-    listaAtividade.push(atividadeMaiusc);
-    console.log(listaMateria);
-    console.log(listaAtividade);
-    Swal.fire({
-        icon: 'success',
-        title: 'Sucesso',
-        text: 'A pessoa '+materia+ ' foi adicionada!',
-      })}
-}
-
-function rmv(){
-    let materia = document.getElementById("materia").value;
-    var materiaMaiusc = materia.toUpperCase();
-    let pos = listaMateria.indexOf(materiaMaiusc);
-    if(pos == -1){
-        Swal.fire({
-            icon: 'error',
-            title: 'Erro',
-            text: 'A pessoa '+materia+' não foi encontrada na lista!'
-          })
-    }
-    else{
-        listaMateria.splice(pos, 1);
-        listaAtividade.splice(pos, 1);
-        Swal.fire({
-            icon: 'success',
-            title: 'Sucesso',
-            text: 'A pessoa '+materia+ ' foi removida!',
-            
-          })
-          console.log(listaMateria);
-          console.log(listaAtividade);
-    }
-    
-}
-
-let usuario = JSON.parse(localStorage.getItem("logado"));
 document.getElementById("titulo").innerHTML = "Bem vindo, "+usuario.login+"!";
+
+function adicionarAtividade() {
+    let usuario = JSON.parse(localStorage.getItem("logado"));
+    if (usuario) {
+        let materia = document.getElementById("materia").value;
+        let atividade = document.getElementById("atividade").value;
+
+        if (!atividadesUsuario[usuario.login]) {
+            atividadesUsuario[usuario.login] = [];
+        }
+
+        atividadesUsuario[usuario.login].push({ materia, atividade });
+        localStorage.setItem("atividadesUsuario", JSON.stringify(atividadesUsuario));
+
+        console.log(atividadesUsuario);
+    } else {
+        console.log("Usuário não está logado.");
+    }
+}
+
+localStorage.setItem("logado", JSON.stringify(usuario));
+
+function exibirAtividades() {
+    let usuario = JSON.parse(localStorage.getItem("logado"));
+    if (usuario) {
+        let atividades = JSON.parse(localStorage.getItem("atividadesUsuario"));
+        if (atividades) {
+            atividadesUsuario = atividades;
+        }
+    
+        let atividadesDoUsuario = atividadesUsuario[usuario.login] || [];
+
+        console.log(atividadesDoUsuario);
+    } else {
+        console.log("Usuário não está logado.");
+    }
+}
+
+function removerAtividade(index) {
+    let usuario = JSON.parse(localStorage.getItem("logado"));
+    if (usuario) {
+        if (atividadesUsuario[usuario.login]) {
+            if (index >= 0 && index < atividadesUsuario[usuario.login].length) {
+                atividadesUsuario[usuario.login].splice(index, 1);
+                localStorage.setItem("atividadesUsuario", JSON.stringify(atividadesUsuario));
+
+                console.log("Atividade removida com sucesso.");
+            } else {
+                console.log("Índice de atividade inválido.");
+            }
+        } else {
+            console.log("Nenhuma atividade encontrada para o usuário.");
+        }
+    } else {
+        console.log("Usuário não está logado.");
+    }
+}
