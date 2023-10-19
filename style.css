@@ -1,56 +1,167 @@
 @import url('https://fonts.cdnfonts.com/css/bogart');
 
-@keyframes brilho {
-    0% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.5;
-    }
-    100% {
-      opacity: 1;
-    }
-  }
 
-  body {
-    font-family: 'Bogart', sans-serif;
-    width: 100vw;
-    height: 100vh;
-    text-align: center;
-    color: rgb(0, 0, 0);
-    overflow: hidden;
+
+
+@keyframes pulseBackground {
+  0% {
+    background-color: #FFDDC1;
+  }
+  50% {
+    background-color: #FFABAB;
+  }
+  100% {
+    background-color: #FFDDC1;
+  }
 }
+
+
+@keyframes pulseBorder {
+  0% {
+    border-width: 2px;
+  }
+  50% {
+    border-width: 4px;
+  }
+  100% {
+    border-width: 2px;
+  }
+}
+
+@keyframes brilho {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+body {
+  font-family: 'Bogart', sans-serif;
+  width: 100vw;
+  height: 100vh;
+  text-align: center;
+  color: #000;
+  overflow: hidden;
+  background: linear-gradient(135deg, #FFDDC1, #FFABAB);
+  background-size: 200% 200%;
+  animation: pulseBackground 10s linear infinite, moveGradient 10s linear infinite;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    45deg,
+    #FFDDC1,
+    #FFDDC1 10px,
+    #FFABAB 10px,
+    #FFABAB 20px
+  );
+  opacity: 0.6;
+  z-index: -1;
+  animation: moveBackground 20s linear infinite, moveLines 10s linear infinite; 
+}
+
+
 input {
-    width: 200px;
-    height: 20px;
-    border-radius: 3px;
-    text-align: center;
-    font-size: large;
+  width: 250px;
+  height: 50px;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  text-align: center;
+  font-size: x-large;
+  margin: 10px 0;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  outline: none;
+  background-color: rgba(255, 255, 255, 0.9);
 }
+
+
+input:hover, input:focus {
+  border-color: #ff9966;
+  box-shadow: 0 0 10px rgba(255, 153, 102, 0.5);
+  background-color: #fff;
+}
+
+
 button {
-    width: 100px;
-    height: 35px;
-    border-radius: 15px;
-    font-size: medium;
-    background-color: rgba(255, 228, 196, 0.205);
+  width: 200px;
+  height: 60px;
+  border: none;
+  border-radius: 15px;
+  font-size: x-large;
+  background: linear-gradient(135deg, #FFA07A, #FF6B6B);
+  color: #fff;
+  cursor: pointer;
+  margin: 10px 0;
+  transition: background 0.3s, box-shadow 0.3s;
+  outline: none;
 }
+
+
+button:hover, button:focus {
+  background: linear-gradient(135deg, #FF7043, #FF3838);
+  box-shadow: 0 0 10px rgba(255, 56, 56, 0.5);
+}
+
+
 .login {
-    flex: 1;
-    color: #000000;
-    border-width: 1px;
-    border-radius: 15px;
-    border: solid;
-    margin-right: 40%;
-    margin-left: 40%;
+  flex: 1;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  animation: moveElements 3s infinite, pulseBorder 2s infinite;
+  transition: all 0.3s;
 }
+
+
 .registrar {
-    flex: 1;
-    margin-left: 100px;
-    margin-right: 100px;
+  flex: 1;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  animation: moveElements 3s infinite, pulseBorder 2s infinite;
+  transition: all 0.3s;
 }
-.h1{
-    margin-top: 120px;
-    color: rgb(0, 0, 0);
-    font-family: 'Bogart', sans-serif;
-    font-size: xx-large;
+
+
+h1 {
+  margin-top: 120px;
+  color: #000;
+  font-family: 'Bogart', sans-serif;
+  font-size: xxx-large;
 }
+
+
+.login, .registrar, input, button {
+  transform: scale(1);
+  transition: transform 0.2s;
+}
+
+
+.login:hover, .registrar:hover, input:hover, button:hover {
+  transform: scale(1.1);
+}
+
+
+h1 {
+  background: linear-gradient(135deg, #080808, #080808);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+
+
+
