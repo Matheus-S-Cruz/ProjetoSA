@@ -87,9 +87,19 @@ function exibirAtividades() {
     
         let atividadesDoUsuario = atividadesUsuario[usuario.login] || [];
 
-        console.log(atividadesDoUsuario);
+        let resultadoDiv = document.getElementById("resultadoAtividades");
+
+        // Cria uma string para exibir as atividades
+        let atividadesHTML = "<h2>Atividades do Usuário:</h2><ul>";
+        atividadesDoUsuario.forEach((atividade, index) => {
+            atividadesHTML += `<li>${atividade.materia}: ${atividade.atividade} <button onclick="removerAtividade(${index})">Remover</button></li>`;
+        });
+        atividadesHTML += "</ul>";
+
+        // Atualiza o conteúdo da div com a lista de atividades
+        resultadoDiv.innerHTML = atividadesHTML;
     } else {
-        console.log("Usuário não está logado.");
+        resultadoDiv.innerHTML = "Usuário não está logado.";
     }
 }
 
