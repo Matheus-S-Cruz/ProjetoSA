@@ -112,6 +112,25 @@ function removerAtividade(index) {
                 localStorage.setItem("atividadesUsuario", JSON.stringify(atividadesUsuario));
 
                 console.log("Atividade removida com sucesso.");
+                if (usuario) {
+                    let atividades = JSON.parse(localStorage.getItem("atividadesUsuario"));
+                    if (atividades) {
+                        atividadesUsuario = atividades;
+                    }
+                
+                    let atividadesDoUsuario = atividadesUsuario[usuario.login] || [];
+            
+                    let resultadoDiv = document.getElementById("resultadoAtividades");
+            
+                    // Cria uma string para exibir as atividades
+                    let atividadesHTML = "<h2>Atividades do Usuário:</h2><ul>";
+                    atividadesDoUsuario.forEach((atividade, index) => {
+                        atividadesHTML += `<li>${atividade.materia}: ${atividade.atividade} <button onclick="removerAtividade(${index})">Remover</button></li>`;
+                    });
+                    atividadesHTML += "</ul>";
+            
+                    // Atualiza o conteúdo da div com a lista de atividades
+                    resultadoDiv.innerHTML = atividadesHTML;
             } else {
                 console.log("Índice de atividade inválido.");
             }
@@ -121,4 +140,4 @@ function removerAtividade(index) {
     } else {
         console.log("Usuário não está logado.");
     }
-}
+    }}
