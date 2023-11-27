@@ -1,4 +1,158 @@
-let atividadesUsuario = {};
+let atividades = [];
+
+document.addEventListener("DOMContentLoaded", function () {
+    carrega();
+    let btnAddAtividade = document.getElementById("btnAddAtividade");
+    let modalNovaAtividade = document.getElementById("modalNovaAtividade");
+    let spanNovaAtidade = modalNovaAtividade.querySelector(".close");
+
+    btnAddAtividade.onclick = function () {
+        modalNovaAtividade.style.display = "block";
+    };
+
+    spanNovaAtidade.onclick = function () {
+        modalNovaAtividade.style.display = "none";
+    };
+
+    window.onclick = function (event) {
+        if (event.target == modalNovaAtividade) {
+            modalNovaAtividade.style.display = "none";
+        }
+    };
+
+    let botoes = document.querySelectorAll('.btn-info');
+    for (let i = 0; i < botoes.length; i++) {
+        botoes[i].onclick = function () {
+            modal(this);
+        };
+    }
+});
+
+function identifica(materia) {
+    for (let atividade of atividades) {
+        if (atividade.materia === materia.id) {
+            return atividade;
+        }
+    }
+    return null;
+}
+
+// Função para exibir modal de informações do aluno
+function modal(button) {
+    let atividade = identifica(button);
+
+    let modal = document.getElementById("myModal");
+
+    if (!modal) {
+        console.error("Elemento 'myModal' não encontrado no DOM");
+        return;
+    }
+
+    let span = modal.querySelector(".close");
+    if (!span) {
+        console.error("Elemento 'close' não encontrado no DOM");
+        return;
+    }
+
+    let materiaModal = modal.querySelector("#materiaModal");
+    let nomeModal = modal.querySelector("#nomeModal");atividade
+    let btnExcluirAtividade = modal.querySelector("#btnExcluirAtividade");
+
+    if (!materiaModal || !nomeModal || !btnExcluirAtividade) {
+        console.error("Elementos não encontrados no DOM");
+        return;
+    }
+
+    materiaModal.innerHTML = atividade.materia;
+    nomeModal.innerHTML = atividade.nome;
+
+    btnExcluirAtividade.onclick = function () {
+        excluirAtividade(atividade.nome);
+        modal.style.display = "none";
+    };
+
+    span.onclick = function () {
+        modal.style.display = "none";
+    };
+
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    };
+
+    modal.style.display = "block";
+}
+
+function excluirAtividade(nome) {
+    atividades = atividades.filter(atividade => atividade.nome !== nome);
+    localStorage.setItem("atividades", JSON.stringify(atividades));
+    carrega();
+}
+
+function carrega() {
+    let tabela = document.getElementById("carros");
+    atividades = JSON.parse(localStorage.getItem("atividades")) || [];
+
+    tabela.innerHTML = "";
+
+    for (let atividade of atividades) {
+        let botaoid = `<td><button id='${atividade.materia}' class='btn-info'>Mais info</button></td>`;
+        let linha = `<tr>
+            <td>${atividade.materia}</td>
+            <td>${atividade.nome}</td>
+            ${botaoid}</tr>`;
+        tabela.innerHTML += linha;
+    }
+
+    let botoes = document.querySelectorAll('.btn-info');
+    for (let i = 0; i < botoes.length; i++) {
+        botoes[i].onclick = function () {
+            modal(this);
+        };
+    }
+}
+
+function adicionarAtividade() {
+    let materia = document.getElementById("materia").value;
+    let nome = document.getElementById("nome").value;
+
+    if (atividadeExistente(nome)) {
+        alert("Atividade já cadastrada. Insira uma atividade única.");
+        return;
+    }
+
+    let novaAtividade = {
+        materia: materia,
+        nome: nome,
+    };
+
+    atividades = JSON.parse(localStorage.getItem("atividades")) || [];
+    atividades.push(novaAtividade);
+
+    localStorage.setItem("atividades", JSON.stringify(atividades));
+
+    carrega();
+
+    modalNovaAtividade.style.display = "none";
+}
+
+// Função para verificar se o aluno já existe
+function atividadeExistente(nome) {
+    return atividades.some(atividade => atividade.nome === nome);
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 let usuario = JSON.parse(localStorage.getItem("logado"));
 if (usuario) {
@@ -55,89 +209,3 @@ function login(){
 }
 
 document.getElementById("titulo").innerHTML = "Bem vindo, "+usuario.login+"!";
-
-function adicionarAtividade() {
-    let usuario = JSON.parse(localStorage.getItem("logado"));
-    if (usuario) {
-        let materia = document.getElementById("materia").value;
-        let atividade = document.getElementById("atividade").value;
-
-        if (!atividadesUsuario[usuario.login]) {
-            atividadesUsuario[usuario.login] = [];
-        }
-
-        atividadesUsuario[usuario.login].push({ materia, atividade });
-        localStorage.setItem("atividadesUsuario", JSON.stringify(atividadesUsuario));
-
-        console.log(atividadesUsuario);
-    } else {
-        console.log("Usuário não está logado.");
-    }
-}
-
-localStorage.setItem("logado", JSON.stringify(usuario));
-
-function exibirAtividades() {
-    let usuario = JSON.parse(localStorage.getItem("logado"));
-    if (usuario) {
-        let atividades = JSON.parse(localStorage.getItem("atividadesUsuario"));
-        if (atividades) {
-            atividadesUsuario = atividades;
-        }
-    
-        let atividadesDoUsuario = atividadesUsuario[usuario.login] || [];
-
-        let resultadoDiv = document.getElementById("resultadoAtividades");
-
-        // Cria uma string para exibir as atividades
-        let atividadesHTML = "<h2>Atividades do Usuário:</h2><ul>";
-        atividadesDoUsuario.forEach((atividade, index) => {
-            atividadesHTML += `<li>${atividade.materia}: ${atividade.atividade} <button onclick="removerAtividade(${index})">Remover</button></li>`;
-        });
-        atividadesHTML += "</ul>";
-
-        // Atualiza o conteúdo da div com a lista de atividades
-        resultadoDiv.innerHTML = atividadesHTML;
-    } else {
-        resultadoDiv.innerHTML = "Usuário não está logado.";
-    }
-}
-
-function removerAtividade(index) {
-    let usuario = JSON.parse(localStorage.getItem("logado"));
-    if (usuario) {
-        if (atividadesUsuario[usuario.login]) {
-            if (index >= 0 && index < atividadesUsuario[usuario.login].length) {
-                atividadesUsuario[usuario.login].splice(index, 1);
-                localStorage.setItem("atividadesUsuario", JSON.stringify(atividadesUsuario));
-
-                console.log("Atividade removida com sucesso.");
-                if (usuario) {
-                    let atividades = JSON.parse(localStorage.getItem("atividadesUsuario"));
-                    if (atividades) {
-                        atividadesUsuario = atividades;
-                    }
-                
-                    let atividadesDoUsuario = atividadesUsuario[usuario.login] || [];
-            
-                    let resultadoDiv = document.getElementById("resultadoAtividades");
-            
-                    // Cria uma string para exibir as atividades
-                    let atividadesHTML = "<h2>Atividades do Usuário:</h2><ul>";
-                    atividadesDoUsuario.forEach((atividade, index) => {
-                        atividadesHTML += `<li>${atividade.materia}: ${atividade.atividade} <button onclick="removerAtividade(${index})">Remover</button></li>`;
-                    });
-                    atividadesHTML += "</ul>";
-            
-                    // Atualiza o conteúdo da div com a lista de atividades
-                    resultadoDiv.innerHTML = atividadesHTML;
-            } else {
-                console.log("Índice de atividade inválido.");
-            }
-        } else {
-            console.log("Nenhuma atividade encontrada para o usuário.");
-        }
-    } else {
-        console.log("Usuário não está logado.");
-    }
-    }}
